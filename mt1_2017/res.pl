@@ -125,34 +125,42 @@ mostEffectivePlayers(Game, [BestPlayer | OtherPlayersList]):-
 % W - MinAge
 
 % Guardando a matriz triangular inferior
+matrix([[8], [8, 2], [7, 4, 3], [7, 4, 3, 1]]).
 
-addPair(Elem, CurrentElem, MaxDist, CurrentPairs, CurrentPairs, _):-
-    0 is Elem - CurrentElem.
-addPair(Elem, CurrentElem, MaxDist, CurrentPairs, CurrentPairs, _):-
-    Dist is abs(Elem - CurrentElem),
-    MaxDist < Dist.
-addPair(Elem, CurrentElem, MaxDist, CurrentPairs, [Elem/CurrentElem | CurrentPairs], StoredPairs):-
-    \+member(Elem/CurrentElem, CurrentPairs),
-    \+member(Elem/CurrentElem, StoredPairs),
-    \+member(CurrentElem/Elem, StoredPairs),
-    \+member(CurrentElem/Elem, CurrentPairs).
-addPair(_, _, _, CurrentPairs, CurrentPairs, _).
+calculateIndex(1, Y, 1/NewY):-
+    NewY is Y + 1.
+% calculateIndex(X, Y, X/NewY):-
+%     Y >= X,
+%     NewY is Y + 1.
+calculateIndex(X, Y, X/Y).
+    
 
-getNewPairs(_, [], _, _, []).
-getNewPairs(MaxDist, [H | T], Elem, CurrentPairs, FinalPairs):-
-    getNewPairs(MatDist, T, Elem, CurrentPairs, NewPairs),
-    addPair(Elem, H, MaxDist, NewPairs, FinalPairs, CurrentPairs).
+areClose(_, [], _, _, []).
+areClose(MaxDist, [H | T1], X, Y, [Index | T2]):-
+    H =< MaxDist,
+    calculateIndex(X, Y, Index),
+    NewY is Y + 1,
+    areClose(MaxDist, T1, X, NewY, T2).
+areClose(MaxDist, [_ | T1], X, Y, List):-
+    NewY is Y + 1,
+    areClose(MaxDist, T1, X, NewY, List).
 
-areCloseHelper(MaxDist, MatDist, [H | T1], Pares):-
-    areCloseHelper(MaxDist, MatDist, T1, NewPares),
-    getNewPairs(MaxDist, MatDist, H, NewPares, Pares).
-
-
+areClose(_, [], _, []).
+areClose(MaxDist, [H | T], X, FinalPares):-
+    areClose(MaxDist, H, X, 1, NewPares),
+    NewX is X + 1,
+    areClose(MaxDist, T, NewX, Pares),
+    append(NewPares, Pares, FinalPares).
+    
 areClose(MaxDist, MatDist, Pares):-
-    areCloseHelper(MaxDist, MatDist, MatDist, Pares).
+    areClose(MaxDist, MatDist, 2, Pares).
+
+areClose(MaxDist, P):-
+    matrix(X),
+    areClose(MaxDist, X, P).
 
 
 % A melhor forma de codificar esta seria atraves de cada no ser representado atraves da estrutura [ID, leftTree, RightTree]
 
-[1, [2, [5, [7, [8, australia, [9, [10, stahelena, anguila], georgiadosul]], uk], [6, servia, franca]], [3, [4, niger, india], irlanda]], brasil]
+% [1, [2, [5, [7, [8, australia, [9, [10, stahelena, anguila], georgiadosul]], uk], [6, servia, franca]], [3, [4, niger, india], irlanda]], brasil]
 
