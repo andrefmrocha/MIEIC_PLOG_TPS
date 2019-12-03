@@ -45,7 +45,7 @@ quadrado(Board, Size):-
     all_distinct(FlattedBoard),
     Ntimes is Size * Size,
     maplist(domain_list(1, Ntimes), Board),
-    Sum is (Ntimes + 1) * 3 // 2,
+    Sum is (Ntimes + 1) * Size // 2,
     maplist(sum_list(Sum, #=), Board),
     transpose(Board, NewBoard),
     maplist(sum_list(Sum, #=), NewBoard),
