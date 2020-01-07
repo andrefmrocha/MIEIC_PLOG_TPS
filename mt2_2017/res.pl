@@ -49,3 +49,20 @@ cut(Shelves, Boards, SelectedBoards):-
     cumulatives(Tasks, Machines, [bound(upper)]),
     labeling([], SelectedBoards).
 
+% Last exercise using bin_packing
+
+make_item(Id, Size, item(Id, Size)).
+make_bin(_, [], []).
+make_bin(Id, [H | T], [bin(Id, Size) | Items]):-
+    Size #=< H,
+    NewId is Id + 1,
+    make_bin(NewId, T, Items).
+
+cut2(Shelves, Boards, SelectedBoards):-
+    length(Shelves, Length),
+    length(SelectedBoards, Length),
+    length(Items, Length),
+    maplist(make_item, SelectedBoards, Shelves, Items),
+    make_bin(1, Boards, Bins),
+    bin_packing(Items, Bins),
+    labeling([], SelectedBoards).
